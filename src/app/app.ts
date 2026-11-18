@@ -1,15 +1,13 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
 import { Header } from './core/header/header';
+import { Navbar } from './core/navbar/navbar';
 import { Home } from './core/home/home';
 import { Footer } from './core/footer/footer';
 
 @Component({
-  imports: [RouterOutlet, Header,Home,Footer],
   selector: 'app-root',
-  styleUrl: './app.css',
+  imports: [Header, Navbar, Home, Footer],
   templateUrl: './app.html',
+  styleUrl: './app.css',
 })
-export class App {
-  protected readonly title = signal('DAS13');
-}
+export class App {}

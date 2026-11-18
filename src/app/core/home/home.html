@@ -1,1 +1,19 @@
-<p>home works!</p>
+<section class="welcome" aria-labelledby="welcome-heading">
+  <div>
+    <p class="eyebrow">MON ESPACE CONFÉRENCES</p>
+    <h2 id="welcome-heading">Bonjour {{ firstName() }}<span class="welcome-dot">.</span></h2>
+    <p class="welcome-copy">Retrouvez votre profil, votre réseau et les événements à venir.</p>
+  </div>
+  <div class="welcome-note">
+    <span class="icon-badge"><app-icon name="sparkles" /></span>
+    <span>ANNÉE UNIVERSITAIRE<br /><strong>2026 — 2027</strong></span>
+  </div>
+</section>
+
+<section class="personal-grid" aria-label="Votre profil et votre communauté">
+  <app-profile-user [(name)]="profileName" email="etudiant@exemple.fr" />
+  <app-friends-list [friends]="friends" />
+  <app-notification-list [notifications]="notifications()" (readAll)="markNotificationsRead()" />
+</section>
+
+<app-conference-list (registrationAdded)="onRegistration($event)" />

@@ -1,0 +1,91 @@
+<section
+  id="conference"
+  class="panel conference-details"
+  aria-labelledby="conference-details-heading"
+>
+  <header class="details-header">
+    <span class="icon-badge details-icon"><app-icon name="info" aria-hidden="true" /></span>
+    <div>
+      <p class="eyebrow">Un événement à découvrir</p>
+      <h2 id="conference-details-heading" class="section-heading">Détail de la conférence</h2>
+    </div>
+  </header>
+
+  @if (conference(); as selected) {
+    <div class="details-layout">
+      <div class="details-content">
+        <span class="selection-label"
+          ><span aria-hidden="true"></span> Conférence sélectionnée</span
+        >
+        <h3>{{ selected.title | uppercase }}</h3>
+        <p class="description">{{ selected.description }}</p>
+        <dl class="conference-meta">
+          <div>
+            <dt><app-icon name="calendar" aria-hidden="true" /> Date</dt>
+            <dd>{{ selected.date | date: 'EEEE d MMMM yyyy' }}</dd>
+          </div>
+          <div>
+            <dt><app-icon name="location" aria-hidden="true" /> Lieu</dt>
+            <dd>{{ selected.place }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <aside class="registration" aria-label="Inscription à la conférence">
+        <div class="remaining" aria-live="polite" aria-atomic="true">
+          <strong>{{ remaining() }}</strong>
+          <span>{{ remaining() === 1 ? 'place disponible' : 'places disponibles' }}</span>
+        </div>
+        <progress
+          [value]="selected.nbParticipants"
+          [max]="selected.maxParticipants"
+          aria-label="Nombre de participants inscrits"
+        >
+          {{ selected.nbParticipants }} / {{ selected.maxParticipants }}
+        </progress>
+        <p class="capacity">
+          {{ selected.nbParticipants }} inscrits · Capacité : {{ selected.maxParticipants }}
+        </p>
+        <button
+          type="button"
+          class="button registration-button"
+          [class.registration-button--available]="availability() === 'available'"
+          [class.registration-button--limited]="availability() === 'limited'"
+          [class.registration-button--full]="availability() === 'full'"
+          [disabled]="remaining() === 0"
+          [attr.aria-label]="
+            remaining() === 0
+              ? selected.title + ' : conférence complète'
+              : 'S’inscrire à ' + selected.title
+          "
+          (click)="registerForConference()"
+        >
+          {{ remaining() === 0 ? 'Complet' : 'S’inscrire' }}
+          @if (remaining() > 0) {
+            <app-icon name="arrow-right" aria-hidden="true" />
+          }
+        </button>
+        <p class="registration-note">
+          @if (remaining() === 0) {
+            Toutes les places ont été réservées.
+          } @else if (remaining() < 10) {
+            Dernières places, rejoignez-nous !
+          } @else {
+            Une rencontre pour apprendre et échanger.
+          }
+        </p>
+      </aside>
+    </div>
+  } @else {
+    <div class="empty-selection">
+      <span class="empty-icon"><app-icon name="calendar" aria-hidden="true" /></span>
+      <div>
+        <h3>Sélectionnez une conférence</h3>
+        <p>
+          Choisissez un événement dans la liste pour découvrir son programme et les places
+          disponibles.
+        </p>
+      </div>
+    </div>
+  }
+</section>

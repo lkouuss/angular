@@ -1,67 +1,68 @@
-# DAS13
+# Conference App · DAS13
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.7.
+Application pédagogique de gestion des conférences réalisée pour les **Prosits 1 et 2** : composants, data-binding, contrôle de flux, pipes et communication entre composants avec les Signals.
 
-## Installation
+## Fonctionnalités
 
-Use Node.js 22.22.3+, 24.15.0+, or 26+ with npm. From the project directory, install the locked dependencies:
+- Page composée d’un en-tête, d’une navigation, d’un profil, d’amis, de notifications et d’un pied de page indépendants.
+- Recherche immédiate sur une partie ou la totalité du titre, sans distinction de casse ou d’accents.
+- Liste des conférences à venir, filtre des places disponibles et messages pour les listes vides.
+- Titres en majuscules et dates françaises grâce aux pipes Angular.
+- Inscription depuis une carte ou son détail : un participant ajouté par clic, sans dépassement de capacité.
+- Bouton vert à partir de 10 places, orange de 1 à 9, rouge et désactivé à 0.
+- Sélection et détail synchronisés par `input()` / `output()`.
+- Notifications d’inscription transmises par le parent commun, compteur de lecture et profil modifiable avec `model()`.
+- Interface responsive, navigation au clavier, labels, annonces accessibles et icônes SVG locales.
+
+Les données reprennent les trois conférences de la maquette en novembre 2027, avec **25, 6 et 0 places restantes**. Les noms et adresses du tableau de bord sont des exemples de démonstration.
+
+## Démarrer
+
+Le projet existant utilise Angular 22. Les API employées suivent l’approche Angular 21 du cours ; aucune rétrogradation n’est nécessaire.
+
+Prérequis Node.js compatibles : branche 22 à partir de 22.22.3, branche 24 à partir de 24.15.0, ou version 26 et ultérieure, avec npm.
 
 ```bash
 npm ci
-```
-
-## Development server
-
-To start a local development server, run:
-
-```bash
 npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Ouvrir [http://localhost:4200](http://localhost:4200).
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Vérifications
 
 ```bash
 npm run build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
 npm test -- --watch=false
 ```
 
-## Running end-to-end tests
+Les tests couvrent les interactions et les règles métier : saisie réelle de recherche, sélection, couleurs aux seuils, capacité maximale, communication liste/détail/notifications et validation du profil.
 
-For end-to-end (e2e) testing, run:
+## Architecture
 
-```bash
-ng e2e
+`App` assemble la page. `Home` détient le nom du profil et les notifications. **`ConferenceList` détient les données des conférences**, les filtres et la sélection. `ConferenceDetails` reçoit la sélection et émet une demande d’inscription ; seul le parent modifie les données.
+
+```text
+App
+├── Header
+├── Navbar
+├── Home
+│   ├── ProfileUser            model : name
+│   ├── FriendsList            input : friends
+│   ├── NotificationList       input : notifications / output : readAll
+│   └── ConferenceList         output : registrationAdded
+│       └── ConferenceDetails  input : conference / output : register
+└── Footer
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Les interfaces `Conference`, `Friend` et `AppNotification` se trouvent dans `src/app/shared/models`. Les composants standalone importent explicitement leurs dépendances.
 
-## Additional Resources
+## Guide pour comprendre et présenter le travail
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Le [guide du projet](docs/GUIDE_DU_PROJET.md) explique chaque mécanisme, les fichiers, les choix d’architecture et une démonstration en cinq minutes pour préparer la présentation orale.
+
+## Portée du projet
+
+Il s’agit d’une démonstration côté navigateur, sans backend, authentification ni réservation réelle. Les inscriptions, le profil et la lecture des notifications restent en mémoire et sont réinitialisés au rechargement. Chaque clic valide ajoute un participant, conformément au sujet.
+
+Les dépendances, sorties de compilation, caches, fichiers `.env` et fichiers sensibles courants sont exclus par `.gitignore`. Le dossier `dist/` est généré par la compilation et n’est pas publié dans le dépôt source.

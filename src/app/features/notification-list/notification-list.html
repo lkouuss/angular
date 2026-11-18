@@ -1,0 +1,76 @@
+<section class="panel notification-panel" id="notifications" aria-labelledby="notifications-title">
+  <div class="card-heading">
+    <div>
+      <p class="eyebrow">RESTEZ INFORMÉ</p>
+      <h2 id="notifications-title">
+        Notifications
+        @if (unreadCount() > 0) {
+          <span class="notification-count" [attr.aria-label]="unreadCount() + ' non lues'">{{
+            unreadCount()
+          }}</span>
+        }
+      </h2>
+    </div>
+    <button
+      class="button-icon toggle-button"
+      type="button"
+      (click)="toggleList()"
+      aria-controls="notification-items"
+      [attr.aria-expanded]="expanded()"
+      [attr.aria-label]="expanded() ? 'Masquer les notifications' : 'Afficher les notifications'"
+    >
+      <app-icon name="chevron-down" [class.is-expanded]="expanded()" />
+    </button>
+  </div>
+  <p class="notification-summary" aria-live="polite">
+    @if (unreadCount() > 0) {
+      {{ unreadCount() }}
+      {{ unreadCount() === 1 ? 'nouvelle notification' : 'nouvelles notifications' }}
+    } @else {
+      Vous êtes à jour.
+    }
+  </p>
+
+  <div id="notification-items">
+    @if (expanded()) {
+      <ul class="notification-list">
+        @for (notification of notifications(); track notification.id) {
+          <li class="notification" [class.is-read]="notification.read">
+            <span
+              class="notification-icon"
+              [class.is-registration]="notification.kind === 'registration'"
+              aria-hidden="true"
+            >
+              <app-icon [name]="notificationIcons[notification.kind]" />
+            </span>
+            <div class="notification-content">
+              <div class="notification-title">
+                <h3>{{ notification.title }}</h3>
+                @if (!notification.read) {
+                  <span class="unread-dot" aria-label="Non lue"></span>
+                }
+              </div>
+              <p>{{ notification.message }}</p>
+              <span class="notification-time">{{ notification.time }}</span>
+            </div>
+          </li>
+        } @empty {
+          <li class="empty-notifications">
+            <app-icon name="bell" />
+            <p>Aucune notification pour le moment.</p>
+          </li>
+        }
+      </ul>
+      @if (notifications().length > 0) {
+        <button
+          class="read-all"
+          type="button"
+          [disabled]="unreadCount() === 0"
+          (click)="readAll.emit()"
+        >
+          <app-icon name="check" /> Tout marquer comme lu
+        </button>
+      }
+    }
+  </div>
+</section>

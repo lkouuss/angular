@@ -1,0 +1,150 @@
+<section id="conference-list" aria-labelledby="agenda-title">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow agenda-eyebrow"><span></span> L’AGENDA 2027</p>
+      <h2 id="agenda-title">Conférences à venir</h2>
+      <p>Explorez le programme et choisissez votre prochain rendez-vous.</p>
+    </div>
+    <div class="agenda-summary">
+      <strong>{{ upcomingConferences().length }}</strong
+      ><span>conférences<br />{{ remainingTotal() }} places disponibles</span>
+    </div>
+  </div>
+  <div class="agenda-toolbar">
+    <div class="search-field">
+      <app-icon name="search" />
+      <label for="conference-search" class="sr-only">Rechercher une conférence par titre</label>
+      <input
+        id="conference-search"
+        type="search"
+        placeholder="Rechercher une conférence…"
+        [(ngModel)]="searchTerm"
+        autocomplete="off"
+      />
+      @if (searchTerm()) {
+        <button
+          class="button-icon"
+          type="button"
+          aria-label="Effacer la recherche"
+          (click)="searchTerm.set('')"
+        >
+          <app-icon name="close" />
+        </button>
+      }
+    </div>
+    <label class="availability-filter"
+      ><input
+        type="checkbox"
+        [checked]="availableOnly()"
+        (change)="availableOnly.set(!availableOnly())"
+      />
+      Places disponibles</label
+    >
+    <span class="result-count" aria-live="polite"
+      >{{ visibleConferences().length }} résultat{{
+        visibleConferences().length > 1 ? 's' : ''
+      }}</span
+    >
+  </div>
+  <div class="conference-grid">
+    @for (conference of visibleConferences(); track conference.id) {
+      <article
+        class="conference-card"
+        [class.selected]="selectedId() === conference.id"
+        [attr.aria-label]="conference.title"
+      >
+        <button
+          class="conference-preview"
+          type="button"
+          (click)="selectConference(conference.id)"
+          [attr.aria-pressed]="selectedId() === conference.id"
+          [attr.aria-label]="'Afficher les détails de ' + conference.title"
+        >
+          <span class="card-topline"
+            ><span>RENDEZ-VOUS / 0{{ conference.id }}</span
+            ><app-icon [name]="conference.id === 2 ? 'sparkles' : 'code'"
+          /></span>
+          <strong class="conference-title">{{ conference.title | uppercase }}</strong>
+          <span class="conference-description">{{ conference.description }}</span>
+          <span class="details-link">Voir les détails <app-icon name="arrow-right" /></span>
+        </button>
+        <div class="card-body">
+          <div class="event-meta">
+            <span><app-icon name="calendar" /> {{ conference.date | date: 'dd MMM yyyy' }}</span
+            ><span><app-icon name="location" /> {{ conference.place }}</span>
+          </div>
+          <div class="capacity-label">
+            <span
+              ><strong>{{ remainingPlaces(conference) }}</strong> place{{
+                remainingPlaces(conference) > 1 ? 's' : ''
+              }}
+              restante{{ remainingPlaces(conference) > 1 ? 's' : '' }}</span
+            ><span>{{ conference.nbParticipants }}/{{ conference.maxParticipants }}</span>
+          </div>
+          <progress
+            [value]="conference.nbParticipants"
+            [max]="conference.maxParticipants"
+            [attr.aria-label]="'Participants inscrits à ' + conference.title"
+          ></progress>
+          <div class="registration-row">
+            <span
+              class="availability-status"
+              [class.limited]="remainingPlaces(conference) > 0 && remainingPlaces(conference) < 10"
+              [class.full]="remainingPlaces(conference) === 0"
+            >
+              <span></span>
+              @if (remainingPlaces(conference) === 0) {
+                Complet
+              } @else if (remainingPlaces(conference) < 10) {
+                Dernières places
+              } @else {
+                Disponible
+              }
+            </span>
+            <button
+              class="button"
+              type="button"
+              [class.button-success]="remainingPlaces(conference) >= 10"
+              [class.button-warning]="
+                remainingPlaces(conference) > 0 && remainingPlaces(conference) < 10
+              "
+              [class.button-danger]="remainingPlaces(conference) === 0"
+              [disabled]="remainingPlaces(conference) === 0"
+              [attr.aria-label]="'S’inscrire à ' + conference.title"
+              (click)="registerForConference(conference.id)"
+            >
+              @if (remainingPlaces(conference) === 0) {
+                Complet
+              } @else {
+                S’inscrire <app-icon name="arrow-right" />
+              }
+            </button>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <div class="empty-results panel">
+        <span class="icon-badge"><app-icon name="search" /></span>
+        @if (upcomingConferences().length === 0) {
+          <h3>Aucune conférence à venir</h3>
+          <p>Le prochain programme sera affiché ici dès qu’il sera disponible.</p>
+        } @else {
+          <h3>Aucune conférence ne correspond à votre recherche</h3>
+          <p>Essayez un autre titre ou affichez également les conférences complètes.</p>
+          <button type="button" class="button button-secondary" (click)="clearFilters()">
+            Réinitialiser les filtres
+          </button>
+        }
+      </div>
+    }
+  </div>
+  <div class="registration-feedback" role="status" aria-live="polite" aria-atomic="true">
+    @if (lastRegistration()) {
+      <app-icon name="check" /> <span>{{ lastRegistration() }}</span>
+    }
+  </div>
+  <app-conference-details
+    [conference]="selectedConference()"
+    (register)="registerForConference($event)"
+  />
+</section>

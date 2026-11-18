@@ -1,0 +1,67 @@
+<section class="panel profile-panel" id="profil" aria-labelledby="profile-title">
+  <div class="card-heading">
+    <div>
+      <p class="eyebrow">MON ESPACE</p>
+      <h2 id="profile-title">Profil utilisateur</h2>
+    </div>
+    @if (!editing()) {
+      <button
+        #editButton
+        class="button-icon edit-button"
+        type="button"
+        (click)="startEdit()"
+        aria-label="Modifier mon nom"
+        title="Modifier mon nom"
+      >
+        <app-icon name="edit" />
+      </button>
+    }
+  </div>
+
+  @if (editing()) {
+    <form class="profile-form" (ngSubmit)="saveName()" novalidate>
+      <label for="profile-name">Nom et prénom</label>
+      <input
+        #nameField
+        id="profile-name"
+        name="displayName"
+        type="text"
+        autocomplete="name"
+        [(ngModel)]="draftName"
+        (ngModelChange)="error.set('')"
+        maxlength="60"
+        [attr.aria-invalid]="error() ? 'true' : null"
+        [attr.aria-describedby]="
+          error() ? 'profile-name-help profile-name-error' : 'profile-name-help'
+        "
+      />
+      <p class="field-help" id="profile-name-help">Entre 2 et 60 caractères.</p>
+      @if (error()) {
+        <p class="field-error" id="profile-name-error" role="alert">{{ error() }}</p>
+      }
+      <div class="form-actions">
+        <button class="button button-primary" type="submit">Enregistrer</button>
+        <button class="button button-secondary" type="button" (click)="cancelEdit()">
+          Annuler
+        </button>
+      </div>
+    </form>
+  } @else {
+    <div class="profile-identity">
+      <div class="profile-avatar" aria-hidden="true">{{ initials() }}</div>
+      <div class="profile-person">
+        <h3>{{ name() }}</h3>
+        <p>Membre du campus</p>
+      </div>
+    </div>
+    <div class="profile-email">
+      <app-icon name="mail" />
+      <span>{{ email() }}</span>
+    </div>
+    @if (saved()) {
+      <p class="save-success" role="status"><app-icon name="check" /> Profil mis à jour.</p>
+    } @else {
+      <p class="profile-note">Un espace à votre nom, pour ne manquer aucun rendez-vous.</p>
+    }
+  }
+</section>

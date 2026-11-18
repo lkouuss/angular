@@ -1,24 +1,28 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
+<header class="hero" id="accueil">
+  <div class="hero-shell">
+    <div class="hero-copy">
+      <p class="eyebrow">GESTION DES CONFÉRENCES</p>
+      <h1>Conference App<span class="title-dot">.</span></h1>
+      <p class="hero-description">
+        Des idées à découvrir, des rencontres à partager. Retrouvez les prochains rendez-vous de
+        votre campus.
+      </p>
+      <a class="hero-link" href="#conference-list">
+        Explorer les conférences
+        <app-icon name="arrow-right" />
+      </a>
+    </div>
+
+    <div class="season" aria-hidden="true">
+      <div class="season-top">
+        <app-icon name="calendar" />
+        <span>VOTRE PROCHAIN RENDEZ-VOUS</span>
+      </div>
+      <div class="season-year">2027<span>↗</span></div>
+      <div class="season-bottom">
+        <span class="season-line"></span>
+        <span>Les idées prennent vie ensemble.</span>
+      </div>
     </div>
   </div>
-</nav>
+</header>

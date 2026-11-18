@@ -1,0 +1,32 @@
+<section class="panel friends-panel" id="amis" aria-labelledby="friends-title">
+  <div class="card-heading">
+    <div>
+      <p class="eyebrow">VOTRE COMMUNAUTÉ</p>
+      <h2 id="friends-title">Liste des amis</h2>
+    </div>
+    <span class="friends-count" [attr.aria-label]="friends().length + ' amis'">{{
+      friends().length
+    }}</span>
+  </div>
+
+  <ul class="friends-list" aria-label="Vos contacts">
+    @for (friend of friends(); track friend.id) {
+      <li class="friend">
+        <span class="friend-avatar" aria-hidden="true">{{ friend.initials }}</span>
+        <div class="friend-person">
+          <h3>{{ friend.name }}</h3>
+          <p>{{ friend.role }}</p>
+        </div>
+        <span class="friend-status" [class.is-online]="friend.online">
+          <span class="status-dot" aria-hidden="true"></span>
+          {{ friend.online ? 'En ligne' : 'Absent' }}
+        </span>
+      </li>
+    } @empty {
+      <li class="empty-friends">
+        <app-icon name="users" />
+        <p>Vos amis apparaîtront ici.</p>
+      </li>
+    }
+  </ul>
+</section>
